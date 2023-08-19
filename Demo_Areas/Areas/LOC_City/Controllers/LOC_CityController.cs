@@ -1,6 +1,7 @@
 ﻿using Demo_Areas.Areas.LOC_City.Models;
 using Demo_Areas.Areas.LOC_Country.Models;
 using Demo_Areas.Areas.LOC_State.Models;
+using MessagePack.Formatters;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
@@ -100,18 +101,43 @@ namespace Demo_Areas.Areas.LOC_City.Controllers
                 SqlDataReader objSDR = objCmd.ExecuteReader();
 
                 dt.Load(objSDR);
-
-                LOC_CityModel modelLOC_City = new LOC_CityModel();
-
-                foreach (DataRow dr in dt.Rows)
+                if(dt.Rows.Count > 0)
                 {
-                    modelLOC_City.CityName = (string)dr["CityName"];
-                    modelLOC_City.CityID = Convert.ToInt32(dr["CityID"]);
-                    modelLOC_City.CountryID = Convert.ToInt32(dr["CountryID"]);
-                    modelLOC_City.StateID = Convert.ToInt32(dr["StateID"]);
-                    modelLOC_City.CityCode = (string)dr["CityCode"];
+                    LOC_CityModel modelLOC_City = new LOC_CityModel();
+
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        modelLOC_City.CityName = (string)dr["CityName"];
+                        modelLOC_City.CityID = Convert.ToInt32(dr["CityID"]);
+                        modelLOC_City.CountryID = Convert.ToInt32(dr["CountryID"]);
+                        modelLOC_City.StateID = Convert.ToInt32(dr["StateID"]);
+                        modelLOC_City.CityCode = (string)dr["CityCode"];
+                    }
+
+                    DataTable dt2 = new DataTable();
+                    SqlConnection conn2 = new SqlConnection(connectionstr);
+                    conn2.Open();
+                    SqlCommand objCmd2 = conn1.CreateCommand();
+                    objCmd2.CommandType = CommandType.StoredProcedure;
+                    objCmd2.CommandText = "PR_State_ComboBoxbyCountryId";
+                    objCmd2.Parameters.AddWithValue("@CountryID",modelLOC_City.CityID);
+                    SqlDataReader objSDR2 = objCmd2.ExecuteReader();
+                    dt2.Load(objSDR2);
+
+                    List<LOC_StateDropDownModel> list2 = new List<LOC_StateDropDownModel>();
+
+                    foreach (DataRow dr in dt2.Rows)
+                    {
+                        LOC_StateDropDownModel vlst = new LOC_StateDropDownModel();
+                        vlst.StateID = Convert.ToInt32(dr["StateID"]);
+                        vlst.StateName = dr["StateName"].ToString();
+                        list2.Add(vlst);
+                    }
+                    ViewBag.StateList = list2;
+
+                    return View("LOC_CityAdd", modelLOC_City);
                 }
-                return View("LOC_CityAdd", modelLOC_City);
+                return View("LOC_CityAdd");
             }
             else
             {
