@@ -10,15 +10,22 @@ namespace Demo_Areas.Areas.LOC_State.Controllers
     [Route("LOC_State/[controller]/[action]")]
     public class LOC_StateController : Controller
     {
+        #region CONFIGURATION
         private readonly IConfiguration Configuration;
         public LOC_StateController(IConfiguration _configuration)
         {
             Configuration = _configuration;
         }
+        #endregion
+
+        #region INDEX
         public IActionResult Index()
         {
             return View();
         }
+        #endregion
+
+        #region SELECTALL
         public IActionResult LOC_StateList()
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -32,10 +39,9 @@ namespace Demo_Areas.Areas.LOC_State.Controllers
             dt.Load(objSDR);
             return View("LOC_StateList", dt);
         }
-        public IActionResult LOC_StateAdd()
-        {
-            return View("LOC_StateAdd");
-        }
+        #endregion
+
+        #region DELETE
         public IActionResult Delete(int StateID)
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -48,9 +54,13 @@ namespace Demo_Areas.Areas.LOC_State.Controllers
             objCmd.ExecuteNonQuery();
             return RedirectToAction("LOC_StateList");
         }
+        #endregion
+
+        #region ADD EDIT
         public IActionResult Add(int? StateID)
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
+
             #region Country DropDown
 
             SqlConnection connection1 = new SqlConnection(connectionStr);
@@ -75,6 +85,7 @@ namespace Demo_Areas.Areas.LOC_State.Controllers
             ViewBag.CountryList = list;
 
             #endregion
+
             if (StateID != null)
             {
                 SqlConnection connection = new SqlConnection(connectionStr);
@@ -104,6 +115,9 @@ namespace Demo_Areas.Areas.LOC_State.Controllers
                 return View("LOC_StateAdd");
             }
         }
+        #endregion
+
+        #region SAVE
         public IActionResult Save(LOC_StateModel modelLOC_State)
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -132,6 +146,9 @@ namespace Demo_Areas.Areas.LOC_State.Controllers
 
             return RedirectToAction("LOC_StateList");
         }
+        #endregion
+
+        #region SEARCH
         public IActionResult LOC_StateSearchByName(string? StateName)
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -146,5 +163,6 @@ namespace Demo_Areas.Areas.LOC_State.Controllers
             dt.Load(objSDR);
             return View("LOC_StateList", dt);
         }
+        #endregion
     }
 }

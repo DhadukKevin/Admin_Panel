@@ -10,13 +10,22 @@
 <div class="table-header d-flex">
     <div class="add-button mr-auto">
         <a asp-area="LOC_State" asp-controller="LOC_State" asp-action="Add">
-            <input type="button" class="btn btn-success" value="Add Country" />
+            <input type="button" class="btn btn-success" value="Add State" />
         </a>
     </div>
     <div class="search-field col-xl-4 ms-lg-auto d-flex">
         <div class="me-3">
 
             <form class="d-flex" method="get" asp-area="LOC_State" asp-controller="LOC_State" asp-action="LOC_StateSearchByName">
+                <div class="form-group mb-3 row">
+                    <label class="col-sm-2 control-label col-form-label">Country Name</label>
+                    <div class="col-xl-4">
+                        <select class="form-control" asp-for="CountryID" asp-items="@(new SelectList(ViewBag.CountryList,"CountryID","CountryName"))">
+                            <option value="">Select Country</option>
+                        </select>
+                        <span asp-validation-for="CountryID" class="text-danger"></span>
+                    </div>
+                </div>
                 <input class="form-control me-3" type="search" placeholder="Search" aria-label="Search" runat="server" name="StateName" />
                 <div><button type="submit" class="btn btn-outline-success" value="Search" runat="server">Search</button></div>
             </form>
@@ -58,7 +67,7 @@
                         <div class="ms-2">
                             <form asp-area="LOC_State" asp-controller="LOC_State" asp-action="Add">
                                 <input type="hidden" value="@Convert.ToInt32(dr["StateID"])" name="StateID" />
-                                <button type="submit" class="btn btn-primary" value="Update">Edit</button>
+                                <button type="submit" class="btn btn-info" value="Update">Update</button>
                             </form>
                         </div>
                     </div>

@@ -9,16 +9,23 @@ namespace Demo_Areas.Areas.LOC_Country.Controllers
     [Route("LOC_Country/[controller]/[action]")]
     public class LOC_CountryController : Controller
     {
+        #region INDEX
         public IActionResult Index()
         {
             return View();
         }
+        #endregion
+
+        #region Configuration
         private readonly IConfiguration Configuration;
 
         public LOC_CountryController(IConfiguration _configuration)
         {
             Configuration = _configuration;
         }
+        #endregion
+
+        #region SELECT ALL
         public IActionResult LOC_CountryList()
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -32,10 +39,9 @@ namespace Demo_Areas.Areas.LOC_Country.Controllers
             dt.Load(objSDR);
             return View("LOC_CountryList",dt);
         }
-        public IActionResult LOC_CountryAdd()
-        {
-            return View("LOC_CountryAdd");
-        }
+        #endregion
+
+        #region DELETE
         public IActionResult Delete(int CountryID)
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -49,6 +55,9 @@ namespace Demo_Areas.Areas.LOC_Country.Controllers
 
             return RedirectToAction("LOC_CountryList");
         }
+        #endregion
+
+        #region ADD EDIT
         public IActionResult Add(int? CountryID)
         {
             if (CountryID != null)
@@ -81,7 +90,7 @@ namespace Demo_Areas.Areas.LOC_Country.Controllers
             }
             
         }
-
+        
         public IActionResult Save(LOC_CountryModel modelLOC_Country)
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -109,7 +118,9 @@ namespace Demo_Areas.Areas.LOC_Country.Controllers
 
             return RedirectToAction("LOC_CountryList");
         }
+        #endregion
 
+        #region SEARCH
         public IActionResult LOC_CountrySearchByName(string? CountryName)
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -124,5 +135,6 @@ namespace Demo_Areas.Areas.LOC_Country.Controllers
             dt.Load(objSDR);
             return View("LOC_CountryList", dt);
         }
+        #endregion
     }
 }

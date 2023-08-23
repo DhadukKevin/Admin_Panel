@@ -12,12 +12,14 @@ namespace Demo_Areas.Areas.LOC_City.Controllers
     [Route("LOC_City/[controller]/[action]")]
     public class LOC_CityController : Controller
     {
+        #region INDEX
         public IActionResult Index()
         {
             return View();
         }
+        #endregion
 
-        #region CONNECTION STRING
+        #region CONFIGURATION
         private readonly IConfiguration Configuration;
         public LOC_CityController(IConfiguration _configuration)
         {
@@ -37,7 +39,7 @@ namespace Demo_Areas.Areas.LOC_City.Controllers
             objCmd.CommandText = "PR_City_SelectAll";
             SqlDataReader objSDR = objCmd.ExecuteReader();
             dt.Load(objSDR);
-            return View("LOC_CityList",dt);
+            return View("LOC_CityList", dt);
         }
         #endregion
 
@@ -56,7 +58,7 @@ namespace Demo_Areas.Areas.LOC_City.Controllers
         }
         #endregion
 
-        #region ADD
+        #region ADD EDIT
         public IActionResult Add(int? CityID)
         {
             #region ComboBox
@@ -99,45 +101,43 @@ namespace Demo_Areas.Areas.LOC_City.Controllers
                 objCmd.Parameters.AddWithValue("@CityID", CityID);
                 DataTable dt = new DataTable();
                 SqlDataReader objSDR = objCmd.ExecuteReader();
-
                 dt.Load(objSDR);
-                if(dt.Rows.Count > 0)
+
+                LOC_CityModel modelLOC_City = new LOC_CityModel();
+
+                foreach (DataRow dr in dt.Rows)
                 {
-                    LOC_CityModel modelLOC_City = new LOC_CityModel();
-
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        modelLOC_City.CityName = (string)dr["CityName"];
-                        modelLOC_City.CityID = Convert.ToInt32(dr["CityID"]);
-                        modelLOC_City.CountryID = Convert.ToInt32(dr["CountryID"]);
-                        modelLOC_City.StateID = Convert.ToInt32(dr["StateID"]);
-                        modelLOC_City.CityCode = (string)dr["CityCode"];
-                    }
-
-                    DataTable dt2 = new DataTable();
-                    SqlConnection conn2 = new SqlConnection(connectionstr);
-                    conn2.Open();
-                    SqlCommand objCmd2 = conn1.CreateCommand();
-                    objCmd2.CommandType = CommandType.StoredProcedure;
-                    objCmd2.CommandText = "PR_State_ComboBoxbyCountryId";
-                    objCmd2.Parameters.AddWithValue("@CountryID",modelLOC_City.CityID);
-                    SqlDataReader objSDR2 = objCmd2.ExecuteReader();
-                    dt2.Load(objSDR2);
-
-                    List<LOC_StateDropDownModel> list2 = new List<LOC_StateDropDownModel>();
-
-                    foreach (DataRow dr in dt2.Rows)
-                    {
-                        LOC_StateDropDownModel vlst = new LOC_StateDropDownModel();
-                        vlst.StateID = Convert.ToInt32(dr["StateID"]);
-                        vlst.StateName = dr["StateName"].ToString();
-                        list2.Add(vlst);
-                    }
-                    ViewBag.StateList = list2;
-
-                    return View("LOC_CityAdd", modelLOC_City);
+                    modelLOC_City.CityName = (string)dr["CityName"];
+                    modelLOC_City.StateName = (string)dr["StateName"];
+                    modelLOC_City.CityID = Convert.ToInt32(dr["CityID"]);
+                    modelLOC_City.CountryID = Convert.ToInt32(dr["CountryID"]);
+                    modelLOC_City.StateID = Convert.ToInt32(dr["StateID"]);
+                    modelLOC_City.CityCode = (string)dr["CityCode"];
                 }
-                return View("LOC_CityAdd");
+
+                DataTable dt2 = new DataTable();
+                SqlConnection conn2 = new SqlConnection(connectionstr);
+                conn2.Open();
+                SqlCommand objCmd2 = conn1.CreateCommand();
+                objCmd2.CommandType = CommandType.StoredProcedure;
+                objCmd2.CommandText = "PR_State_ComboBoxbyCountryId";
+                objCmd2.Parameters.AddWithValue("@CountryID", modelLOC_City.CountryID);
+                SqlDataReader objSDR2 = objCmd2.ExecuteReader();
+                dt2.Load(objSDR2);
+
+                List<LOC_StateDropDownModel> list2 = new List<LOC_StateDropDownModel>();
+
+                foreach (DataRow dr in dt2.Rows)
+                {
+                    LOC_StateDropDownModel vlst = new LOC_StateDropDownModel();
+                    vlst.StateID = Convert.ToInt32(dr["StateID"]);
+                    vlst.StateName = dr["StateName"].ToString();
+                    list2.Add(vlst);
+                }
+                ViewBag.StateList = list2;
+
+                return View("LOC_CityAdd", modelLOC_City);
+
             }
             else
             {
@@ -195,35 +195,5 @@ namespace Demo_Areas.Areas.LOC_City.Controllers
         }
         #endregion
 
-        #region Dropdownfill 
-        public IActionResult DropdownByCountry(int CountryID)
-        {
-            string connectionstr = this.Configuration.GetConnectionString("myConnectionString");
-            //PrePare a connection
-            DataTable dt = new DataTable();
-            SqlConnection conn = new SqlConnection(connectionstr);
-            conn.Open();
-            SqlCommand objCmd = conn.CreateCommand();
-            objCmd.CommandType = CommandType.StoredProcedure;
-            objCmd.CommandText = "PR_State_ComboBoxbyCountryId";
-            objCmd.Parameters.AddWithValue("@CountryID", CountryID);
-            SqlDataReader objSDR = objCmd.ExecuteReader();
-            dt.Load(objSDR);
-            conn.Close();
-
-            List<LOC_StateDropDownModel> list = new List<LOC_StateDropDownModel>();
-
-            foreach (DataRow dr in dt.Rows)
-            {
-                LOC_StateDropDownModel vlst = new LOC_StateDropDownModel();
-                vlst.StateID = Convert.ToInt32(dr["StateID"]);
-                vlst.StateName = dr["StateName"].ToString();
-                list.Add(vlst);
-            }
-
-            var vModel = list;
-            return Json(vModel);
-        }
-        #endregion
     }
 }
