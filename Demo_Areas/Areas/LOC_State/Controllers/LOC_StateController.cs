@@ -234,14 +234,6 @@ namespace Demo_Areas.Areas.LOC_State.Controllers
             SqlDataReader objSDR = objCmd.ExecuteReader();
             dt.Load(objSDR);
 
-            Console.WriteLine(FilterModel.CountryID+" "+"hello");
-            Console.WriteLine(FilterModel.StateName + " " + FilterModel.StateCode);
-            foreach (DataRow dr in dt.Rows)
-            {
-                Console.WriteLine(dr["CountryName"]);
-                Console.WriteLine(dr["StateName"]);
-                Console.WriteLine(dr["StateCode"]);
-            }
             ModelState.Clear();
             return View("LOC_StateList", dt);
         } 
