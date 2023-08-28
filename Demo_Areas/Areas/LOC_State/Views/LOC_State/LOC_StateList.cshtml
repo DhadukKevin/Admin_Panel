@@ -1,38 +1,51 @@
 ﻿@using System.Data
 @model DataTable
+@using Demo_Areas.Areas.LOC_State.Models
 @{
+    LOC_StateFilterModel FilterModel = new LOC_StateFilterModel();
     Layout = "~/Views/shared/_Layout.cshtml";
 }
+
 
 <div class="d-flex mt-3 mb-3">
     <h3>State List</h3>
 </div>
-<div class="table-header d-flex">
-    <div class="add-button mr-auto">
-        <a asp-area="LOC_State" asp-controller="LOC_State" asp-action="Add">
-            <input type="button" class="btn btn-success" value="Add State" />
-        </a>
-    </div>
-    <div class="search-field col-xl-4 ms-lg-auto d-flex">
-        <div class="me-3">
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <a asp-area="LOC_State" asp-controller="LOC_State" asp-action="Add">
+                <input type="button" class="btn btn-success" value="Add State" />
+            </a>
 
-            <form class="d-flex" method="get" asp-area="LOC_State" asp-controller="LOC_State" asp-action="LOC_StateSearchByName">
-                <div class="form-group mb-3 row">
-                    <label class="col-sm-2 control-label col-form-label">Country Name</label>
-                    <div class="col-xl-4">
-                        <select class="form-control" asp-for="CountryID" asp-items="@(new SelectList(ViewBag.CountryList,"CountryID","CountryName"))">
-                            <option value="">Select Country</option>
-                        </select>
-                        <span asp-validation-for="CountryID" class="text-danger"></span>
-                    </div>
+        </div>
+        <br />
+        <br />
+        <div class="container-fluid border border-dark p-4">
+            <form class="row">
+                <div>
+                    <h2>Filter</h2>
                 </div>
-                <input class="form-control me-3" type="search" placeholder="Search" aria-label="Search" runat="server" name="StateName" />
-                <div><button type="submit" class="btn btn-outline-success" value="Search" runat="server">Search</button></div>
+                <div class="col-4">
+                    <select class="form-control" asp-for="@FilterModel.CountryID" asp-items="@(new SelectList(ViewBag.CountryList,"CountryID","CountryName"))">
+                        <option value="">Select Country</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" asp-for="@FilterModel.StateName" placeholder="StateName" />
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control" asp-for="@FilterModel.StateCode" placeholder="StateCode" />
+                </div>
+                <div class="col my-2">
+                    <button class="btn btn-success" type="submit" asp-area="LOC_State" asp-controller="LOC_State" asp-action="LOC_StateFilter">Search</button>
+                </div>
+            </form>
+            <form>
+                <button class="btn btn-danger" type="submit" runat="server" OnClientClick="this.form.reset();return false;">Clear</button>
             </form>
         </div>
     </div>
 </div>
-
 
 <table class="table">
     <thead>
@@ -47,7 +60,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(DataRow dr in Model.Rows)
+        @foreach (DataRow dr in Model.Rows)
         {
             <tr>
                 <td>@dr["StateID"]</td>
@@ -61,7 +74,7 @@
                         <div class="me-2">
                             <form method="post" asp-area="LOC_State" asp-controller="LOC_State" asp-action="Delete">
                                 <input type="hidden" value="@Convert.ToInt32(dr["StateID"])" name="StateID" />
-                                <button type="submit" class="btn btn-danger" value="Delete">Delete</button>
+                                <button type="submit" class="btn btn-danger" value="Delete" onclick="return fun1();">Delete</button>
                             </form>
                         </div>
                         <div class="ms-2">
@@ -76,3 +89,17 @@
         }
     </tbody>
 </table>
+
+@section Scripts
+    {
+    <script>
+        function fun1() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    </script>
+}

@@ -52,7 +52,9 @@
 @section Scripts {
     <script>
         function fnOnStateChange() {
+            console.log("h");
             var CountryID = $("#CountryID").val();
+
             if (CountryID !== "") {
                 $("#StateID").empty();
                 $("#StateID").append($("<option></option>").val("").html("Select State"));
@@ -60,7 +62,7 @@
                     {
                         type: "POST",
                         contentType: "application/json; charset=utf-8",
-                        url: "@Url.Action("DropdownByCountry", "LOC_City")" + "?&CountryID=" + CountryID,
+                        url: "@Url.Action("StateDropDownByCountryID", "LOC_City")" + "?&CountryID=" + CountryID,
                         data: {},
                         dataType: "json",
                         success: function (Result) {
@@ -73,7 +75,8 @@
                             alert("Error while loading combobox.");
                         }
                     });
-            } else {
+            }
+            else {
                 $("#StateID").empty();
                 $("#StateID").append($("<option></option>").val("").html("Select State"));
             }

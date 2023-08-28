@@ -195,5 +195,36 @@ namespace Demo_Areas.Areas.LOC_City.Controllers
         }
         #endregion
 
+        #region Cascade DropDown of State
+        public IActionResult StateDropDownByCountryID(int CountryID)
+        {
+            string myconnStr1 = this.Configuration.GetConnectionString("myConnectionString");
+            SqlConnection connection1 = new SqlConnection(myconnStr1);
+            DataTable dt1 = new DataTable();
+            connection1.Open();
+            SqlCommand cmd1 = connection1.CreateCommand();
+            cmd1.CommandType = CommandType.StoredProcedure;
+            cmd1.CommandText = "PR_State_ComboBoxbyCountryId";
+            cmd1.Parameters.AddWithValue("@CountryID", CountryID);
+            SqlDataReader reader1 = cmd1.ExecuteReader();
+            dt1.Load(reader1);
+
+            List<LOC_StateDropDownModel> list = new List<LOC_StateDropDownModel>();
+
+            foreach (DataRow dr in dt1.Rows)
+            {
+                LOC_StateDropDownModel lstList = new LOC_StateDropDownModel();
+                lstList.StateID = Convert.ToInt32(dr["StateID"]);
+                lstList.StateName = dr["StateName"].ToString();
+                list.Add(lstList);
+            }
+            var vModel = list;
+            return Json(vModel);
+
+        }
+
+
+
+        #endregion
     }
 }

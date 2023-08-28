@@ -66,40 +66,6 @@ namespace Demo_Areas.Areas.MST_Student.Controllers
         #endregion
 
         #region Add/Edit
-
-        public IActionResult Save(MST_StudentModel model)
-        {
-            string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
-            SqlConnection connection = new SqlConnection(connectionStr);
-            connection.Open();
-            SqlCommand objCmd = connection.CreateCommand();
-            objCmd.CommandType = CommandType.StoredProcedure;
-            if (model.StudentID == null)
-            {
-                objCmd.CommandText = "PR_Student_Insert";
-            }
-            else
-            {
-                objCmd.CommandText = "PR_Student_UpdateByPK";
-                objCmd.Parameters.AddWithValue("@StudentID", model.StudentID);
-            }
-            objCmd.Parameters.AddWithValue("@BranchID", model.BranchID);
-            objCmd.Parameters.AddWithValue("@CityID", model.CityID);
-            objCmd.Parameters.AddWithValue("@StudentName", model.StudentName);
-            objCmd.Parameters.AddWithValue("@MobileNoStudent", model.MobileNoStudent);
-            objCmd.Parameters.AddWithValue("@Email", model.Email);
-            objCmd.Parameters.AddWithValue("@MobileNoFather", model.MobileNoFather);
-            objCmd.Parameters.AddWithValue("@Address", model.Address);
-            objCmd.Parameters.AddWithValue("@BirthDate", model.BirthDate);
-            objCmd.Parameters.AddWithValue("@Age", model.Age);
-            objCmd.Parameters.AddWithValue("@IsActive", model.IsActive);
-            objCmd.Parameters.AddWithValue("@Gender", model.Gender);
-            objCmd.Parameters.AddWithValue("@Password", model.Password);
-            objCmd.ExecuteNonQuery();
-            connection.Close();
-            return RedirectToAction("MST_StudentList");
-        }
-
         public IActionResult MST_StudentAdd(int? StudentID)
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
@@ -187,5 +153,42 @@ namespace Demo_Areas.Areas.MST_Student.Controllers
         }
 
         #endregion
+
+        #region SAVE
+        public IActionResult Save(MST_StudentModel model)
+        {
+            string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
+            SqlConnection connection = new SqlConnection(connectionStr);
+            connection.Open();
+            SqlCommand objCmd = connection.CreateCommand();
+            objCmd.CommandType = CommandType.StoredProcedure;
+            if (model.StudentID == null)
+            {
+                objCmd.CommandText = "PR_Student_Insert";
+            }
+            else
+            {
+                objCmd.CommandText = "PR_Student_UpdateByPK";
+                objCmd.Parameters.AddWithValue("@StudentID", model.StudentID);
+            }
+            objCmd.Parameters.AddWithValue("@BranchID", model.BranchID);
+            objCmd.Parameters.AddWithValue("@CityID", model.CityID);
+            objCmd.Parameters.AddWithValue("@StudentName", model.StudentName);
+            objCmd.Parameters.AddWithValue("@MobileNoStudent", model.MobileNoStudent);
+            objCmd.Parameters.AddWithValue("@Email", model.Email);
+            objCmd.Parameters.AddWithValue("@MobileNoFather", model.MobileNoFather);
+            objCmd.Parameters.AddWithValue("@Address", model.Address);
+            objCmd.Parameters.AddWithValue("@BirthDate", model.BirthDate);
+            objCmd.Parameters.AddWithValue("@Age", model.Age);
+            objCmd.Parameters.AddWithValue("@IsActive", model.IsActive);
+            objCmd.Parameters.AddWithValue("@Gender", model.Gender);
+            objCmd.Parameters.AddWithValue("@Password", model.Password);
+            objCmd.ExecuteNonQuery();
+            connection.Close();
+            return RedirectToAction("MST_StudentList");
+        }
+        #endregion
+
+        
     }
 }
