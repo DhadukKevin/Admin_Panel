@@ -113,7 +113,7 @@ namespace Demo_Areas.Areas.LOC_City.Controllers
         #endregion
 
         #region ADD EDIT
-        public IActionResult Add(int? CityID)
+        public IActionResult Add(int? CityID)   
         {
             #region ComboBox
 

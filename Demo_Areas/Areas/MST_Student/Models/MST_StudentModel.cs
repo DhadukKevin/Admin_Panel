@@ -16,4 +16,10 @@
         public string Gender { get; set; }
         public string Password { get; set; }
     }
+    public class MST_StudentFilterModel
+    {
+        public int? BranchID { get; set; }
+        public int? CityID { get; set; }
+        public string? StudentName { get; set; }
+    }
 }

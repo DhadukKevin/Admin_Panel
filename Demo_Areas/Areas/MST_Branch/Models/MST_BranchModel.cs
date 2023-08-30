@@ -9,7 +9,7 @@
         public string BranchCode { get; set; }
     }
 
-    public class MSt_BranchDropDownModel
+    public class MST_BranchDropDownModel
     {
         public int BranchID { get; set; }
         public string BranchName { get; set; }

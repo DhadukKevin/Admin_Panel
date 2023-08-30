@@ -1,24 +1,50 @@
-﻿﻿@{
-    Layout = "~/Views/shared/_Layout.cshtml";
-}
-
-@using System.Data;
+﻿@using System.Data;
 @model DataTable;
-
+@using Demo_Areas.Areas.MST_Student.Models
+﻿@{
+    Layout = "~/Views/shared/_Layout.cshtml";
+    MST_StudentFilterModel FilterModel = new MST_StudentFilterModel();
+}
 
 <div class="body">
     <div class="d-flex mt-3 mb-3">
         <h3>Student List</h3>
     </div>
-    <div class="table-header d-flex">
-        <div class="add-button mr-auto">
-            <a asp-area="MST_Student" asp-controller="MST_Student" asp-action="MST_StudentAdd">
-                <input type="button" class="btn btn-success" value="Add New Record" />
-            </a>
-        </div>
-        <div class="pull-right col-xl-4 ms-lg-auto">
-            <div id="sample_1_filter" class="dataTables_filter">
-                <input type="text" class="form-control input-group-sm input-small input-inline" id="sample_1" placeholder="Search" aria-controls="sample_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <a asp-area="MST_Student" asp-controller="MST_Student" asp-action="MST_StudentAdd">
+                    <input type="button" class="btn btn-success" value="Add Student" />
+                </a>
+
+            </div>
+            <br />
+            <br />
+            <div class="container-fluid border border-dark p-4">
+                <form class="row">
+                    <div>
+                        <h2>Filter</h2>
+                    </div>
+                    <div class="col-4">
+                        <select class="form-control" asp-for="@FilterModel.CityID" asp-items="@(new SelectList(ViewBag.CityList,"CityID","CityName"))">
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <select class="form-control" asp-for="@FilterModel.BranchID" asp-items="@(new SelectList(ViewBag.BranchList,"BranchID","BranchName"))">
+                            <option value="">Select Branch</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" class="form-control" asp-for="@FilterModel.StudentName" placeholder="StudentName" />
+                    </div>
+                    <div class="col my-2">
+                        <button class="btn btn-success" type="submit" asp-area="MST_Student" asp-controller="MST_Student" asp-action="MST_StudentFilter">Search</button>
+                    </div>
+                </form>
+                <form>
+                    <button class="btn btn-danger" type="submit" runat="server" OnClientClick="this.form.reset();return false;">Clear</button>
+                </form>
             </div>
         </div>
     </div>
@@ -83,17 +109,3 @@
         </tbody>
     </table>
 </div>
-
-@section Scripts
-    {
-    <script>
-        $(document).ready(function () {
-            $("#sample_1").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $("#sample_2 tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-        });
-    </script>
-}

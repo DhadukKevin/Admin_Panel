@@ -49,37 +49,3 @@
     </form>
 </div>
 
-@section Scripts {
-    <script>
-        function fnOnStateChange() {
-            console.log("h");
-            var CountryID = $("#CountryID").val();
-
-            if (CountryID !== "") {
-                $("#StateID").empty();
-                $("#StateID").append($("<option></option>").val("").html("Select State"));
-                $.ajax(
-                    {
-                        type: "POST",
-                        contentType: "application/json; charset=utf-8",
-                        url: "@Url.Action("StateDropDownByCountryID", "LOC_City")" + "?&CountryID=" + CountryID,
-                        data: {},
-                        dataType: "json",
-                        success: function (Result) {
-                            $.each(Result,
-                                function (key, value) {
-                                    $("#StateID").append($("<option></option>").val(value.stateID).html(value.stateName));
-                                });
-                        },
-                        error: function (r) {
-                            alert("Error while loading combobox.");
-                        }
-                    });
-            }
-            else {
-                $("#StateID").empty();
-                $("#StateID").append($("<option></option>").val("").html("Select State"));
-            }
-        }
-    </script>
-}

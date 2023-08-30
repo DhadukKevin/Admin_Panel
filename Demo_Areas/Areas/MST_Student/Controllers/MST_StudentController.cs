@@ -7,6 +7,7 @@ using Demo_Areas.Areas.MST_Branch.Models;
 using Demo_Areas.Areas.MST_Student.Models;
 using Demo_Areas.Areas.LOC_Country.Models;
 using Demo_Areas.Areas.LOC_City.Models;
+using Demo_Areas.Areas.LOC_State.Models;
 
 namespace Demo_Areas.Areas.MST_Student.Controllers
 {
@@ -31,10 +32,60 @@ namespace Demo_Areas.Areas.MST_Student.Controllers
         #endregion
 
         #region Student Select All
-
         public IActionResult MST_StudentList()
         {
             string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
+
+            #region Branch DropDown
+
+            SqlConnection connection1 = new SqlConnection(connectionStr);
+            connection1.Open();
+            SqlCommand objCmd1 = connection1.CreateCommand();
+            objCmd1.CommandType = CommandType.StoredProcedure;
+            objCmd1.CommandText = "PR_Branch_ComboBox";
+            SqlDataReader reader1 = objCmd1.ExecuteReader();
+            DataTable dt1 = new DataTable();
+            dt1.Load(reader1);
+            connection1.Close();
+
+            List<MST_BranchDropDownModel> list1 = new List<MST_BranchDropDownModel>();
+
+            foreach (DataRow dr in dt1.Rows)
+            {
+                MST_BranchDropDownModel branchModel = new MST_BranchDropDownModel();
+                branchModel.BranchID = Convert.ToInt32(dr["BranchID"]);
+                branchModel.BranchName = dr["BranchName"].ToString();
+                list1.Add(branchModel);
+            }
+            ViewBag.BranchList = list1;
+
+            #endregion
+
+            #region City DropDown
+
+            SqlConnection connection2 = new SqlConnection(connectionStr);
+            connection2.Open();
+            SqlCommand objCmd2 = connection2.CreateCommand();
+            objCmd2.CommandType = CommandType.StoredProcedure;
+            objCmd2.CommandText = "PR_City_ComboBox";
+            SqlDataReader reader2 = objCmd2.ExecuteReader();
+            DataTable dt2 = new DataTable();
+            dt2.Load(reader2);
+            connection2.Close();
+
+            List<LOC_CityDropDownModel> list2 = new List<LOC_CityDropDownModel>();
+
+            foreach (DataRow dr in dt2.Rows)
+            {
+                LOC_CityDropDownModel cityModel = new LOC_CityDropDownModel();
+                cityModel.CityID = Convert.ToInt32(dr["CityID"]);
+                cityModel.CityName = dr["CityName"].ToString();
+                list2.Add(cityModel);
+            }
+            ViewBag.CityList = list2;
+
+            #endregion
+
             DataTable dt = new DataTable();
             SqlConnection connection = new SqlConnection(connectionStr);
             connection.Open();
@@ -81,11 +132,11 @@ namespace Demo_Areas.Areas.MST_Student.Controllers
             DataTable dt1 = new DataTable();
             dt1.Load(reader1);
 
-            List<MSt_BranchDropDownModel> list = new List<MSt_BranchDropDownModel>();
+            List<MST_BranchDropDownModel> list = new List<MST_BranchDropDownModel>();
 
             foreach (DataRow dr in dt1.Rows)
             {
-                MSt_BranchDropDownModel branchModel = new MSt_BranchDropDownModel();
+                MST_BranchDropDownModel branchModel = new MST_BranchDropDownModel();
                 branchModel.BranchID = Convert.ToInt32(dr["BranchID"]);
                 branchModel.BranchName = dr["BranchName"].ToString();
                 list.Add(branchModel);
@@ -189,6 +240,76 @@ namespace Demo_Areas.Areas.MST_Student.Controllers
         }
         #endregion
 
-        
+        #region FILTER
+        public IActionResult MST_StudentFilter(MST_StudentFilterModel FilterModel)
+        {
+            string connectionStr = this.Configuration.GetConnectionString("myConnectionString");
+
+            #region Branch DropDown
+
+            SqlConnection connection1 = new SqlConnection(connectionStr);
+            connection1.Open();
+            SqlCommand objCmd1 = connection1.CreateCommand();
+            objCmd1.CommandType = CommandType.StoredProcedure;
+            objCmd1.CommandText = "PR_Branch_ComboBox";
+            SqlDataReader reader1 = objCmd1.ExecuteReader();
+            DataTable dt1 = new DataTable();
+            dt1.Load(reader1);
+            connection1.Close();
+
+            List<MST_BranchDropDownModel> list1 = new List<MST_BranchDropDownModel>();
+
+            foreach (DataRow dr in dt1.Rows)
+            {
+                MST_BranchDropDownModel branchModel = new MST_BranchDropDownModel();
+                branchModel.BranchID = Convert.ToInt32(dr["BranchID"]);
+                branchModel.BranchName = dr["BranchName"].ToString();
+                list1.Add(branchModel);
+            }
+            ViewBag.BranchList = list1;
+
+            #endregion
+
+            #region City DropDown
+
+            SqlConnection connection2 = new SqlConnection(connectionStr);
+            connection2.Open();
+            SqlCommand objCmd2 = connection2.CreateCommand();
+            objCmd2.CommandType = CommandType.StoredProcedure;
+            objCmd2.CommandText = "PR_City_ComboBox";
+            SqlDataReader reader2 = objCmd2.ExecuteReader();
+            DataTable dt2 = new DataTable();
+            dt2.Load(reader2);
+            connection2.Close();
+
+            List<LOC_CityDropDownModel> list2 = new List<LOC_CityDropDownModel>();
+
+            foreach (DataRow dr in dt2.Rows)
+            {
+                LOC_CityDropDownModel cityModel = new LOC_CityDropDownModel();
+                cityModel.CityID = Convert.ToInt32(dr["CityID"]);
+                cityModel.CityName = dr["CityName"].ToString();
+                list2.Add(cityModel);
+            }
+            ViewBag.CityList = list2;
+
+            #endregion
+
+            DataTable dt = new DataTable();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            connection.Open();
+            SqlCommand objCmd = connection.CreateCommand();
+            objCmd.CommandType = CommandType.StoredProcedure;
+            objCmd.CommandText = "PR_Student_Filter";
+            objCmd.Parameters.AddWithValue("@CityID", FilterModel.CityID);
+            objCmd.Parameters.AddWithValue("@BranchID", FilterModel.BranchID);
+            objCmd.Parameters.AddWithValue("@StudentName", FilterModel.StudentName);
+            SqlDataReader objSDR = objCmd.ExecuteReader();
+            dt.Load(objSDR);
+
+            ModelState.Clear();
+            return View("MST_StudentList", dt);
+        }
+        #endregion
     }
 }

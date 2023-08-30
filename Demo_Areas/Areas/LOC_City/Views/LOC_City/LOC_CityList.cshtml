@@ -80,7 +80,7 @@
                         <div class="me-2">
                             <form method="post" asp-area="LOC_City" asp-controller="LOC_City" asp-action="Delete">
                                 <input type="hidden" value="@Convert.ToInt32(dr["CityID"])" name="CityID" />
-                                <button type="submit" class="btn btn-danger" value="Delete">Delete</button>
+                                <button type="submit" class="btn btn-danger" value="Delete" onclick="return fun1();">Delete</button>
                             </form>
                         </div>
                         <div class="ms-2">
@@ -95,3 +95,17 @@
         }
     </tbody>
 </table>
+
+@section Scripts
+    {
+    <script>
+        function fun1() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    </script>
+}
